@@ -7,6 +7,8 @@
 void Engine::draw() {
     window.clear(Color::Black);
 
+
+
     window.draw(player.getShape());
     //window.draw(player.getOutline());
     window.draw(crosshair.getShape());

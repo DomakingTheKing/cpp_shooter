@@ -26,6 +26,13 @@ private:
     int currentGameState{};
     int lastGameState{};
 
+    int currentLevel{};
+    int maxLevels;
+    vector<String> levels;
+
+    void loadLevelBackground(String levelFile);
+    void loadLevelCollisions(String levelFile);
+
     Player player;
     Crosshair crosshair;
 public:
@@ -38,9 +45,11 @@ public:
 
     void newPlayer();
 
+    void checkLevelFiles();
+    void loadLevel(int levelNumber);
+
     void run();
     void input();
-    void addDirection(int newDirection);
     void update();
     void draw();
 
