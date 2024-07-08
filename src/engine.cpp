@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <random>
 #include "engine.hpp"
 #include "player.hpp"
 
@@ -153,4 +154,13 @@ void Engine::run() {
 
         window.display();
     }
+}
+
+double Engine::getRandomValue(float min, float max) {
+    // Usa la libreria di numeri casuali di C++11
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(min, max);
+
+    return dis(gen);
 }

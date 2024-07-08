@@ -28,9 +28,11 @@ void Engine::input() {
 
         // Handle mouse input
         if (event.type == Event::MouseButtonPressed) {
-            // Shoot
+            // Shot
             if (event.mouseButton.button == Mouse::Left) {
-                player.shoot();
+                player.shot();
+                soundEngine.getShotSfx()->setPitch(getRandomValue(1.5, 2));
+                soundEngine.playSound(soundEngine.getShotSfx());
             }
         }
     }

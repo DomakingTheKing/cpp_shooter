@@ -21,6 +21,8 @@ add_executable(cpp_shooter
         headers/particle.hpp
         src/particleSystem.cpp
         headers/particleSystem.hpp
+        src/soundengine.cpp
+        headers/soundengine.hpp
 )
 
 include_directories(headers /usr/include c:/SFML/include)

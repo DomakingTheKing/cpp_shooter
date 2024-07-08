@@ -55,7 +55,7 @@ void Player::update() {
     sprite.setRotation(rotation);
 }
 
-void Player::shoot() {
+void Player::shot() {
     // Calcola il vettore direzionale
     sf::Vector2f direction = sf::Vector2f(Mouse::getPosition(window).x, Mouse::getPosition(window).y) - position;
 

@@ -32,7 +32,7 @@ public:
     void setRotation(float newRotation);
     void update();
 
-    void shoot();
+    void shot();
 };
 
 

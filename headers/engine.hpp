@@ -10,9 +10,11 @@
 #include "player.hpp"
 #include "crosshair.hpp"
 #include "particleSystem.hpp"
+#include "soundengine.hpp"
 
 using namespace sf;
 
+extern SoundEngine soundEngine;
 extern ParticleSystem particleSystem;
 extern RenderWindow window;
 extern vector<FloatRect> collisionBounds;
@@ -60,6 +62,8 @@ public:
     void draw();
 
     void drawRay();
+
+    static double getRandomValue(float min, float max);
 };
 
 
