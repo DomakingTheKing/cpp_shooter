@@ -126,7 +126,7 @@ void Engine::loadLevelCollisions(String levelFile) {
                 collisionVertices.append(v4);
 
                 // Add the bounds of this quad to collisionBounds
-                FloatRect bounds(x, y, 1, 1);
+                FloatRect bounds(x, y, 2, 2);
                 collisionBounds.push_back(bounds);
             }
         }

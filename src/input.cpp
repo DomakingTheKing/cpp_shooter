@@ -1,8 +1,18 @@
 #include "engine.hpp"
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <thread>
 
 using namespace sf;
+bool isMouseButtonPressed = false;
+
+void handleShooting(Player& player, SoundEngine& soundEngine) {
+    while (isMouseButtonPressed) {
+        player.shot();
+        soundEngine.playSound(soundEngine.getShotSfx());
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+}
 
 void Engine::input() {
     Event event{};
@@ -30,13 +40,18 @@ void Engine::input() {
         if (event.type == Event::MouseButtonPressed) {
             // Shot
             if (event.mouseButton.button == Mouse::Left) {
-                player.shot();
-                soundEngine.getShotSfx()->setPitch(getRandomValue(1.5, 2));
-                soundEngine.playSound(soundEngine.getShotSfx());
+                isMouseButtonPressed = true;
+                std::thread shootingThread(handleShooting, std::ref(player), std::ref(soundEngine));
+                shootingThread.detach();
+            }
+        }
+
+        if (event.type == Event::MouseButtonReleased) {
+            if (event.mouseButton.button == Mouse::Left) {
+                isMouseButtonPressed = false;
             }
         }
     }
-
 
     // Player movement
     Vector2f movement(0.f, 0.f);

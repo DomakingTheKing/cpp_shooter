@@ -66,8 +66,8 @@ void Player::shot() {
     }
 
     particleSystem.addParticle(Particle(position, direction, Color::Red, 25.0f, 0.0f, 0, 8.0f, false));
-    particleSystem.addParticle(Particle(position, direction, Color::Red, 25.0f, 15.0f, 0, 10.0f, false));
-    particleSystem.addParticle(Particle(position, direction, Color::Red, 25.0f, -15.0f, 0, 10.0f, false));
+    particleSystem.addParticle(Particle(position, direction, Color::Red, 25.0f, 5.0f, 0, 10.0f, false));
+    particleSystem.addParticle(Particle(position, direction, Color::Red, 25.0f, -5.0f, 0, 10.0f, false));
 }
 
 sf::Vector2f Player::getPosition() {
