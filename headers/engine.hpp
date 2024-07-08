@@ -15,6 +15,7 @@ using namespace sf;
 
 extern ParticleSystem particleSystem;
 extern RenderWindow window;
+extern vector<FloatRect> collisionBounds;
 
 class Engine {
 private:
@@ -23,8 +24,8 @@ private:
     const unsigned int FPS = 60;
     static const Time TimePerFrame;
 
-    int currentGameState{};
-    int lastGameState{};
+    Texture backgroundTexture;
+    Sprite background;
 
     int currentLevel{};
     int maxLevels;
@@ -32,6 +33,11 @@ private:
 
     void loadLevelBackground(String levelFile);
     void loadLevelCollisions(String levelFile);
+
+    VertexArray collisionVertices;
+
+    int currentGameState{};
+    int lastGameState{};
 
     Player player;
     Crosshair crosshair;

@@ -7,10 +7,10 @@
 void Engine::draw() {
     window.clear(Color::Black);
 
-
+    window.draw(background);
 
     window.draw(player.getShape());
-    //window.draw(player.getOutline());
+    window.draw(player.getOutline());
     window.draw(crosshair.getShape());
 
     for (const auto& particle : particleSystem.getParticles()) {

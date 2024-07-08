@@ -35,10 +35,19 @@ bool Particle::isAlive() const {
     if (maxDistance > 0) {
         return distanceTraveled < maxDistance;
     } else {
+        // Controlla se la particella interseca una delle collision shapes
+        FloatRect particleBounds = shape.getGlobalBounds();
+        for (const auto& bound : collisionBounds) {
+            if (particleBounds.intersects(bound)) {
+                return false;
+            }
+        }
+
         // Controlla se la particella è ancora all'interno della finestra
         return position.x >= 0 && position.x <= window.getSize().x && position.y >= 0 && position.y <= window.getSize().y;
     }
 }
+
 
 RectangleShape Particle::getShape() const {
     return shape;

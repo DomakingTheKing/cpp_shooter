@@ -8,6 +8,7 @@
 #include "player.hpp"
 
 const Time Engine::TimePerFrame = seconds(1.f / 60.f);
+vector<FloatRect> collisionBounds;
 
 Engine::Engine() {
     resolution = Vector2f(1280, 720);
@@ -15,6 +16,7 @@ Engine::Engine() {
     window.setFramerateLimit(FPS);
     window.setMouseCursorVisible(false);
 
+    checkLevelFiles();
     newPlayer();
 }
 
@@ -47,7 +49,7 @@ void Engine::checkLevelFiles() {
         testFileCollisions.open("assets/levels/collisions/" + manifestLine);
         if (testFileBG.is_open() && testFileCollisions.is_open()) {
             // The level file opens, add it to the list of available levels
-            levels.emplace_back("assets/levels/backgrounds/" + manifestLine);
+            levels.emplace_back(manifestLine);
             testFileBG.close();
             testFileCollisions.close();
             maxLevels++;
@@ -62,20 +64,72 @@ void Engine::checkLevelFiles() {
 void Engine::loadLevel(int levelNumber) {
     string levelFile = levels[levelNumber - 1];
     loadLevelBackground(levelFile);
+    loadLevelCollisions(levelFile);
 }
 
 void Engine::loadLevelBackground(String levelFile) {
-    Texture background;
-    if(!background.loadFromFile("assets/levels/backgrounds/" + levelFile)) {
+    if(!backgroundTexture.loadFromFile("assets/levels/backgrounds/" + levelFile)) {
         cerr << "Failed to load background" << endl;
     } else {
-        Sprite backgroundSprite;
-        backgroundSprite.setTexture(background);
+        background.setTexture(backgroundTexture);
+        background.scale(10,10);
     }
 }
 
-void Engine::loadLevelCollisions(String levelFile) {
 
+void Engine::loadLevelCollisions(String levelFile) {
+    Texture collisionTexture;
+    if (!collisionTexture.loadFromFile("assets/levels/collisions/" + levelFile)) {
+        cerr << "Failed to load collision map" << endl;
+        return;
+    }
+
+    Image collisionImage = collisionTexture.copyToImage();
+    Vector2u imageSize = collisionImage.getSize();
+
+    // Scale factor
+    float scaleFactor = 10.0f;
+
+    // Create a new image with scaled dimensions
+    Image scaledImage;
+    scaledImage.create(imageSize.x * scaleFactor, imageSize.y * scaleFactor);
+
+    // Copy and scale pixels from the original image to the new image
+    for (unsigned int y = 0; y < imageSize.y; ++y) {
+        for (unsigned int x = 0; x < imageSize.x; ++x) {
+            Color pixelColor = collisionImage.getPixel(x, y);
+            for (unsigned int dy = 0; dy < scaleFactor; ++dy) {
+                for (unsigned int dx = 0; dx < scaleFactor; ++dx) {
+                    scaledImage.setPixel(x * scaleFactor + dx, y * scaleFactor + dy, pixelColor);
+                }
+            }
+        }
+    }
+
+    // Use the scaled image to create collision shapes
+    Vector2u scaledSize = scaledImage.getSize();
+    collisionVertices.setPrimitiveType(Quads);
+    for (unsigned int y = 0; y < scaledSize.y; ++y) {
+        for (unsigned int x = 0; x < scaledSize.x; ++x) {
+            Color pixelColor = scaledImage.getPixel(x, y);
+            if (pixelColor == Color::Red) {
+                // Create a quad for each red pixel
+                Vertex v1(Vector2f(x, y), Color::Transparent);
+                Vertex v2(Vector2f(x + 1, y), Color::Transparent);
+                Vertex v3(Vector2f(x + 1, y + 1), Color::Transparent);
+                Vertex v4(Vector2f(x, y + 1), Color::Transparent);
+
+                collisionVertices.append(v1);
+                collisionVertices.append(v2);
+                collisionVertices.append(v3);
+                collisionVertices.append(v4);
+
+                // Add the bounds of this quad to collisionBounds
+                FloatRect bounds(x, y, 1, 1);
+                collisionBounds.push_back(bounds);
+            }
+        }
+    }
 }
 
 void Engine::run() {
@@ -95,7 +149,7 @@ void Engine::run() {
         input();
         update();
         draw();
-        // drawRay();
+        drawRay();
 
         window.display();
     }
